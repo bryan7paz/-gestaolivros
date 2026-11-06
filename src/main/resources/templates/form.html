@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:replace="~{fragments :: head(${acao == 'Atualizar'} ? 'Editar livro · Gestão de Livros' : 'Cadastrar livro · Gestão de Livros')}"></head>
+<body>
+
+<nav>
+    <a class="marca" th:href="@{/livros}">Gestão de Livros</a>
+    <ul>
+        <li><a class="link" th:href="@{/livros}">Acervo</a></li>
+        <li><a class="link" th:href="@{/livros/novo}">Cadastrar</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h1 th:text="${acao == 'Atualizar'} ? 'Editar livro' : 'Cadastrar livro'">Cadastrar livro</h1>
+    <p class="lead"
+       th:text="${acao == 'Atualizar'} ? 'Altere os dados do livro e salve.'
+                                         : 'Preencha os dados do livro abaixo. Campos com * são obrigatórios.'">
+        Preencha os dados do livro abaixo.
+    </p>
+
+    <div class="cartao-form">
+        <form method="post" th:object="${livro}"
+              th:action="${acao == 'Atualizar'} ? @{/livros/{id}(id=${livro.id})} : @{/livros}">
+
+            <div th:if="${#fields.hasErrors('*')}" class="aviso erro">
+                Corrija os campos destacados abaixo antes de salvar.
+            </div>
+
+            <div class="campo">
+                <label for="titulo">Título *</label>
+                <input type="text" id="titulo" th:field="*{titulo}">
+                <p class="erro-campo" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></p>
+            </div>
+
+            <div class="campo">
+                <label for="autor">Autor *</label>
+                <input type="text" id="autor" th:field="*{autor}">
+                <p class="erro-campo" th:if="${#fields.hasErrors('autor')}" th:errors="*{autor}"></p>
+            </div>
+
+            <div class="campo">
+                <label for="genero">Gênero</label>
+                <input type="text" id="genero" th:field="*{genero}" placeholder="Romance, Fantasia...">
+                <p class="erro-campo" th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></p>
+            </div>
+
+            <div class="campo duas-colunas">
+                <div>
+                    <label for="anoPublicacao">Ano de publicação *</label>
+                    <input type="number" id="anoPublicacao" th:field="*{anoPublicacao}" min="1" max="2100">
+                    <p class="erro-campo" th:if="${#fields.hasErrors('anoPublicacao')}" th:errors="*{anoPublicacao}"></p>
+                </div>
+                <div>
+                    <label for="status">Status de leitura *</label>
+                    <select id="status" th:field="*{status}">
+                        <option th:each="s : ${statusLeitura}" th:value="${s.name()}" th:text="${s.descricao}"></option>
+                    </select>
+                    <p class="erro-campo" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></p>
+                </div>
+            </div>
+
+            <div class="acoes-form">
+                <button type="submit" class="btn"
+                        th:text="${acao == 'Atualizar'} ? 'Salvar alterações' : 'Cadastrar livro'">Cadastrar livro</button>
+                <a class="btn btn-ghost" th:href="@{/livros}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer class="page">
+    Gestão de Livros · Spring Boot · Thymeleaf · H2 (banco em memória)
+</footer>
+
+</body>
+</html>

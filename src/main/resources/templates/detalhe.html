@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:replace="~{fragments :: head(${livro != null} ? ${livro.titulo} + ' · Gestão de Livros' : 'Livro · Gestão de Livros')}"></head>
+<body>
+
+<nav>
+    <a class="marca" th:href="@{/livros}">Gestão de Livros</a>
+    <ul>
+        <li><a class="link" th:href="@{/livros}">Acervo</a></li>
+        <li><a class="link" th:href="@{/livros/novo}">Cadastrar</a></li>
+    </ul>
+</nav>
+
+<main>
+    <div th:if="${erro}" class="aviso erro" th:text="${erro}"></div>
+
+    <p><a th:href="@{/livros}">&larr; Voltar ao acervo</a></p>
+
+    <h1 th:text="${livro.titulo}">Título</h1>
+    <p class="lead" th:text="${livro.autor}">Autor</p>
+
+    <dl class="ficha">
+        <dt>Gênero</dt>
+        <dd th:text="${livro.genero} ?: '—'">Gênero</dd>
+
+        <dt>Ano de publicação</dt>
+        <dd th:text="${livro.anoPublicacao}">2000</dd>
+
+        <dt>Status de leitura</dt>
+        <dd th:text="${livro.status.descricao}">Lido</dd>
+
+        <dt>Identificador</dt>
+        <dd th:text="'#' + ${livro.id}">#1</dd>
+    </dl>
+
+    <div style="display:flex; gap: .75rem; margin-top: 1.5rem">
+        <a class="btn" th:href="@{/livros/{id}/editar(id=${livro.id})}">Editar</a>
+        <form method="post" th:action="@{/livros/{id}/excluir(id=${livro.id})}"
+              onsubmit="return confirm('Excluir este livro do acervo?')">
+            <button type="submit" class="btn btn-ghost" style="color:#b91c1c">Excluir</button>
+        </form>
+    </div>
+</main>
+
+<footer class="page">
+    Gestão de Livros · Spring Boot · Thymeleaf · H2 (banco em memória)
+</footer>
+
+</body>
+</html>

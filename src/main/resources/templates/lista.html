@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:replace="~{fragments :: head('Gestão de Livros')}"></head>
+<body>
+
+<nav>
+    <a class="marca" th:href="@{/livros}">Gestão de Livros</a>
+    <ul>
+        <li><a class="link" th:href="@{/livros}">Acervo</a></li>
+        <li><a class="link" th:href="@{/livros/novo}">Cadastrar</a></li>
+    </ul>
+</nav>
+
+<main>
+    <div th:if="${sucesso}" class="aviso ok" th:text="${sucesso}"></div>
+    <div th:if="${erro}" class="aviso erro" th:text="${erro}"></div>
+
+    <div class="barra-topo">
+        <div>
+            <h1>Acervo</h1>
+            <p class="lead">Livros cadastrados na sua biblioteca pessoal.</p>
+        </div>
+        <a class="btn" th:href="@{/livros/novo}">Cadastrar livro</a>
+    </div>
+
+    <form method="get" th:action="@{/livros}" style="margin-bottom:1rem">
+        <div style="display:flex; gap:.5rem; max-width:480px">
+            <input type="text" name="titulo" placeholder="Buscar pelo título..."
+                   th:value="${filtro}" aria-label="Buscar pelo título"
+                   style="flex:1; padding:.55rem .75rem; border:1px solid #d9d9d9; font:inherit">
+            <button type="submit" class="btn btn-ghost">Buscar</button>
+        </div>
+    </form>
+
+    <h2 th:if="${not #lists.isEmpty(livros)}"
+        th:text="${#lists.size(livros)} + ' livro(s) encontrado(s)'">3 livro(s) encontrado(s)</h2>
+
+    <table th:if="${not #lists.isEmpty(livros)}">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Gênero</th>
+                <th>Ano</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="l : ${livros}">
+                <td><a class="titulo-livro" th:href="@{/livros/{id}(id=${l.id})}" th:text="${l.titulo}">Título</a></td>
+                <td th:text="${l.autor}">Autor</td>
+                <td th:text="${l.genero} ?: '—'">Gênero</td>
+                <td th:text="${l.anoPublicacao}">2000</td>
+                <td th:text="${l.status.descricao}">Lido</td>
+                <td style="white-space:nowrap">
+                    <a th:href="@{/livros/{id}/editar(id=${l.id})}">Editar</a>
+                    &nbsp;·&nbsp;
+                    <form method="post" th:action="@{/livros/{id}/excluir(id=${l.id})}"
+                          style="display:inline"
+                          onsubmit="return confirm('Excluir este livro do acervo?')">
+                        <button type="submit" class="btn-danger-link">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${#lists.isEmpty(livros)}" class="vazio">
+        <span th:if="${filtro}">Nenhum livro encontrado para “<span th:text="${filtro}"></span>”.</span>
+        <span th:unless="${filtro}">Nenhum livro cadastrado ainda. Use “Cadastrar livro” para começar.</span>
+    </p>
+</main>
+
+<footer class="page">
+    Gestão de Livros · Spring Boot · Thymeleaf · H2 (banco em memória)
+</footer>
+
+</body>
+</html>
